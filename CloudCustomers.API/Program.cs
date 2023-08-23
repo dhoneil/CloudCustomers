@@ -37,5 +37,6 @@ void ConfigureServices(IServiceCollection services)
         builder.Configuration.GetSection("UsersApiOptions")
     );
     services.AddTransient<IUserService, UserService>();
+    services.AddTransient<IAuthService, AuthService>();
     services.AddHttpClient<IUserService, UserService>();
 }

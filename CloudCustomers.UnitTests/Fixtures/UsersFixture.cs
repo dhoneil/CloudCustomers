@@ -17,6 +17,7 @@ namespace CloudCustomers.UnitTests.Fixtures
                 {
                     Name = "Test User 1",
                     Email = "testuser1@test.com",
+                    Password = "123",
                     Address = new Address
                     {
                         Street = "111 market st",
@@ -28,6 +29,7 @@ namespace CloudCustomers.UnitTests.Fixtures
                 {
                     Name = "Test User 2",
                     Email = "testuser2@test.com",
+                    Password = "1234",
                     Address = new Address
                     {
                         Street = "222 market st",
@@ -40,6 +42,7 @@ namespace CloudCustomers.UnitTests.Fixtures
                 {
                     Name = "Test User 3",
                     Email = "testuser3@test.com",
+                    Password = "12345",
                     Address = new Address
                     {
                         Street = "333 market st",
@@ -47,6 +50,16 @@ namespace CloudCustomers.UnitTests.Fixtures
                         ZipCode = "333zip",
                     }
                 }
+            };
+        }
+
+        public static User GetAuthenticatedUser()
+        {
+            return new()
+            {
+                Name = "Test User 1",
+                Email = "",
+                IsAuthenticated = true,
             };
         }
     }

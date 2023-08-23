@@ -126,5 +126,70 @@ namespace CloudCustomers.UnitTests.Systems.Services
                     ItExpr.IsAny<CancellationToken>()
                 );
         }
+
+        //Test name: AuthenticateUser_WhenCalled_ReturnsWhetherUserExistsOrNot
+        //this test is intented to verify if the user exists or not.
+
+
+
+        //CHECK IF EXIST
+        [Theory]
+        [InlineData("testuser1@test.com", "123", true)]
+        [InlineData("test@test.com", "123", false)]
+        public async Task AuthenticateUser_WhenCalled_ReturnsWhetherUserExists(string email, string password, bool isExist)
+        {
+            //arrange
+            var expectedResponse = UsersFixture.GetTestUsers();
+            var endpoint = "https://example.com/users";
+            var handlerMock = MockHttpMessageHandler<User>.SetupBasicGetResourceList(expectedResponse, endpoint);
+            var httpclient = new HttpClient(handlerMock.Object);
+            var config = Options.Create(
+                           new UsersApiOptions
+                           {
+                Endpoint = endpoint
+            });
+            var sut = new AuthService(httpclient, config);
+
+            //act
+            var result = await sut.AuthenticateUser(email,password);
+
+            //assert
+            Assert.NotNull(result);
+
+            if (isExist)
+            {
+                Assert.NotNull(result);
+            }
+            else
+            {
+                Assert.Null(result);
+            }
+        }
+
+        //CHECK IF Authenticated
+        [Theory]
+        [InlineData("testuser1@test.com", "123", true)] //valid
+        [InlineData("test@test.com", "123", false)]
+        public async Task AuthenticateUser_WhenCalled_ReturnsWhetherUserIsAuthenticated(string email, string password, bool isExist)
+        {
+            //arrange
+            var expectedResponse = UsersFixture.GetTestUsers();
+            var endpoint = "https://example.com/users";
+            var handlerMock = MockHttpMessageHandler<User>.SetupBasicGetResourceList(expectedResponse, endpoint);
+            var httpclient = new HttpClient(handlerMock.Object);
+            var config = Options.Create(
+                           new UsersApiOptions
+                           {
+                               Endpoint = endpoint
+                           });
+            var sut = new AuthService(httpclient, config);
+
+            //act
+            var result = await sut.AuthenticateUser("test@gmail.com", "1234");
+
+            //assert
+            Assert.NotNull(result);
+            Assert.True(result.IsAuthenticated);
+        }
     }
 }

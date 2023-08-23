@@ -5,26 +5,30 @@ using System.Net;
 
 namespace CloudCustomers.API.Services
 {
-    public interface IUserService
+    public interface IAuthService
     {
-        Task<List<User>> GetAllUsers();
-        Task<User> GetUserProfile(int v);
+        Task<User> AuthenticateUser(string email, string passWord);
+        object GetCurrentUserId();
     }
-    public class UserService : IUserService
+
+    public class AuthService : IAuthService
     {
         private readonly HttpClient _httpClient;
         private readonly UsersApiOptions apiConfig;
 
-        public UserService(HttpClient httpClient,IOptions<UsersApiOptions> apiConfig)
+        public AuthService(HttpClient httpClient, IOptions<UsersApiOptions> apiConfig)
         {
             _httpClient = httpClient;
             this.apiConfig = apiConfig.Value;
         }
-
-        public async Task<List<User>> GetAllUsers()
+        public object GetCurrentUserId()
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<User> AuthenticateUser(string email, string passWord)
         {
             var usersResponse = await _httpClient.GetAsync(this.apiConfig.Endpoint);
-            if (usersResponse.StatusCode == HttpStatusCode.NotFound) 
+            if (usersResponse.StatusCode == HttpStatusCode.NotFound)
             {
                 return new List<User>();
             }
@@ -32,14 +36,6 @@ namespace CloudCustomers.API.Services
             var allusers = await responsecontent.ReadFromJsonAsync<List<User>>();
             return allusers.ToList();
         }
-
-        public async Task<User> GetUserProfile(int v)
-        {
-            throw new NotImplementedException();
-        }
-
-
-
 
 
     }
